@@ -19,4 +19,6 @@ public interface RecommendationRepository extends ElasticsearchRepository<Recomm
 	// Fuzzy Serch query 
 	@Query("{\"bool\": {\"must\": [{\"match\": {\"title\": \"?0\"}}]}}")
 	List<Recommendation> searchByTitle(String title);
+	
+	
 }

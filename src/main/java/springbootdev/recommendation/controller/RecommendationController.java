@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import springbootdev.recommendation.kafka.KafkaProducer;
 import springbootdev.recommendation.model.Recommendation;
 import springbootdev.recommendation.service.RecommendationService;
 
@@ -20,11 +21,13 @@ import springbootdev.recommendation.service.RecommendationService;
 public class RecommendationController {
 
     private final RecommendationService recommendationService;
-
-    public RecommendationController(RecommendationService recommendationService) {
+    private final KafkaProducer kafkaProducer;
+    public RecommendationController(RecommendationService recommendationService,KafkaProducer kafkaProducer) {
         this.recommendationService = recommendationService;
+		this.kafkaProducer = kafkaProducer;
     }
-
+    
+     
     @PostMapping
     public Recommendation addRecommendation(@RequestBody Recommendation recommendation) {
         return recommendationService.saveRecommendation(recommendation);
@@ -53,6 +56,11 @@ public class RecommendationController {
     @PostMapping("/bulk")
     public Iterable<Recommendation> addBulkRecommendations(@RequestBody List<Recommendation> recommendations) {
         return recommendationService.saveBulkRecommendations(recommendations);
+    }
+    
+    @PostMapping("/stream")
+    public void streamRecommendation(@RequestBody Recommendation recommendation) {
+        kafkaProducer.sendRecommendation(recommendation);
     }
 }
 

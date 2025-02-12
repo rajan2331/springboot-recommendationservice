@@ -5,3 +5,8 @@ spring:
     elasticsearch:
       repositories:
         enabled: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: recommendation-group
+      auto-offset-reset: earliest
