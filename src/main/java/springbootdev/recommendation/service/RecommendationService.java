@@ -1,11 +1,15 @@
 package springbootdev.recommendation.service;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import springbootdev.recommendation.model.Recommendation;
 import springbootdev.recommendation.repo.RecommendationRepository;
-
-import java.util.List;
 
 @Service
 public class RecommendationService {
@@ -20,12 +24,21 @@ public class RecommendationService {
         return recommendationRepository.save(recommendation);
     }
 
-    public List<Recommendation> getRecommendationsByCategory(String category) {
-        return recommendationRepository.findByCategory(category);
+    public Page<Recommendation> getRecommendationsByCategory(String category, int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        return recommendationRepository.findByCategory(category, pageable);
+    }
+
+    public List<Recommendation> searchByTitle(String title) {
+        return recommendationRepository.searchByTitle(title);
     }
 
     public Iterable<Recommendation> getAllRecommendations() {
         return recommendationRepository.findAll();
+    }
+    
+    public Iterable<Recommendation> saveBulkRecommendations(List<Recommendation> recommendations) {
+        return recommendationRepository.saveAll(recommendations);
     }
 }
 
